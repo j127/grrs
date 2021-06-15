@@ -97,12 +97,12 @@ fn find_a_match() {
     assert_eq!(result, b"lorem ipsum\n");
 }
 
-// Example of testing
-// fn answer() -> i32 {
-//     42
-// }
+// Example test
+fn answer() -> i32 {
+    42
+}
 
-// #[test]
-// fn check_answer_validity() {
-//     assert_eq!(answer(), 42);
-// }
+#[test]
+fn check_answer_validity() {
+    assert_eq!(answer(), 42);
+}
