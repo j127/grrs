@@ -26,6 +26,7 @@ fn file_doesnt_exist() -> Result<(), Box<dyn std::error::Error>> {
 
 #[test]
 fn find_content_in_file() -> Result<(), Box<dyn std::error::Error>> {
+    // this is creating an empty temporary file
     let mut file = NamedTempFile::new()?;
     writeln!(file, "A test\nActual content\nMore content\nAnother test")?;
 

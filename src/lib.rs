@@ -3,6 +3,8 @@
 // the test it writes to a `Vec<u8>`.
 // https://doc.rust-lang.org/1.39.0/std/io/trait.Write.html
 //
+// In the `find_content_in_file` test, it writes to a temporary file.
+//
 // If this function returned a `String`, it would collect everything into a
 // string and dump all the results at the end instead of writing to the terminal
 // directly.
