@@ -39,6 +39,22 @@ struct Cli {
     // verbose: clap_verbosity_flag::Verbosity,
 }
 
+// This function accepts any "writer" that implements `std::io::Write`. See the
+// implementors in the docs (Stdout, Stderr, LineWriter, BufWriter, etc.). In
+// the test it writes to a `Vec<u8>`.
+// https://doc.rust-lang.org/1.39.0/std/io/trait.Write.html
+//
+// If this function returned a `String`, it would collect everything into a
+// string and dump all the results at the end instead of writing to the terminal
+// directly.
+fn find_matches(content: &str, pattern: &str, mut writer: impl std::io::Write) {
+    for line in content.lines() {
+        if line.contains(pattern) {
+            writeln!(writer, "{}", line).expect("error writing output");
+        }
+    }
+}
+
 fn main() -> Result<()> {
     env_logger::init();
     info!("booting application");
@@ -54,7 +70,8 @@ fn main() -> Result<()> {
     let args = Cli::from_args();
     // println!("{:?}", args);
 
-    let content = std::fs::read_to_string(&args.path).expect("could not read file");
+    let content = std::fs::read_to_string(&args.path)
+        .with_context(|| format!("could not read file `{}`", args.path.display()))?;
 
     let bar = ProgressBar::new(20000);
     for _ in 0..20000 {
@@ -62,10 +79,30 @@ fn main() -> Result<()> {
     }
     bar.finish();
 
-    for line in content.lines() {
-        if line.contains(&args.pattern) {
-            println!("{}", Cyan.paint(line));
-        }
-    }
+    find_matches(&content, &args.pattern, &mut std::io::stdout());
+
     Ok(())
 }
+
+#[test]
+fn find_a_match() {
+    // Since stdout expects bytes (not strings), we use `std::io::Write`
+    // instead of `std::fmt::Write`. From the docs:
+    // > Write is implemented for Vec<u8> by appending to the vector. The vector
+    // > will grow as needed.
+    let mut result = Vec::new(); // Vec<u8> inferred
+    find_matches("lorem ipsum\ndolor sit amet", "lorem", &mut result);
+
+    // The `b` makes it a _byte string literal_ (`&[u8]` instead of `&str`)
+    assert_eq!(result, b"lorem ipsum\n");
+}
+
+// Example of testing
+// fn answer() -> i32 {
+//     42
+// }
+
+// #[test]
+// fn check_answer_validity() {
+//     assert_eq!(answer(), 42);
+// }
