@@ -21,8 +21,12 @@ use anyhow::{Context, Result};
 // https://docs.rs/structopt/0.3.21/structopt/
 use structopt::StructOpt;
 
+// Add a --verbose flag to CLIs
+// https://crates.io/crates/clap-verbosity-flag
+// extern crate clap_verbosity_flag;
+
 // BufWriter has better performance than println!, because it buffers up to
-// 8 kB.
+// 8 kB (by default).
 // https://rust-cli.github.io/book/tutorial/output.html
 use std::io::{self, Write};
 
@@ -31,6 +35,8 @@ struct Cli {
     pattern: String,
     #[structopt(parse(from_os_str))]
     path: std::path::PathBuf,
+    // #[structopt(flatten)]
+    // verbose: clap_verbosity_flag::Verbosity,
 }
 
 fn main() -> Result<()> {
@@ -41,7 +47,7 @@ fn main() -> Result<()> {
     // let mut handle = io::BufWriter::new(stdout);
     // locking here prevents the system from locking and unlocking over and over
     // The tutorial said you can combine the two approaches, but didn't provide
-    // and example.
+    // an example.
     let mut handle = stdout.lock();
     writeln!(handle, "foo: {}", 127)?;
 

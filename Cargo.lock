@@ -74,6 +74,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "clap-verbosity-flag"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7d77af89389927c728493ffeabe62bbcb4d9c5f0f805b7058b5cff1e097047d"
+dependencies = [
+ "log",
+ "structopt",
+]
+
+[[package]]
 name = "console"
 version = "0.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -111,6 +121,7 @@ version = "0.1.0"
 dependencies = [
  "ansi_term 0.12.1",
  "anyhow",
+ "clap-verbosity-flag",
  "env_logger",
  "indicatif",
  "log",
