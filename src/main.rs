@@ -6,7 +6,7 @@ use log::{info, warn};
 
 // colors
 // https://docs.rs/ansi_term/0.9.0/ansi_term/
-use ansi_term::Colour::Cyan;
+// use ansi_term::Colour::Cyan;
 
 // https://docs.rs/indicatif/0.16.2/indicatif/
 use indicatif::ProgressBar;
@@ -87,13 +87,26 @@ fn main() -> Result<()> {
 #[test]
 fn find_a_match() {
     // Since stdout expects bytes (not strings), we use `std::io::Write`
-    // instead of `std::fmt::Write`. From the docs:
+    // instead of `std::fmt::Write`.
+    //
+    // From the docs:
     // > Write is implemented for Vec<u8> by appending to the vector. The vector
     // > will grow as needed.
     let mut result = Vec::new(); // Vec<u8> inferred
     find_matches("lorem ipsum\ndolor sit amet", "lorem", &mut result);
 
-    // The `b` makes it a _byte string literal_ (`&[u8]` instead of `&str`)
+    // The `b` makes it a _byte string literal_ (`&[u8]` instead of `&str`).
+    //
+    // From the docs: "A string slice (&str) is made of bytes (u8), and a byte
+    // slice (&[u8]) is made of bytes... Not all byte slices are valid string
+    // slices, however: &str requires that it is valid UTF-8."
+    // https://doc.rust-lang.org/std/str/fn.from_utf8.html
+    //
+    // There's an `&[u8]` being converted to an `&str` here:
+    // https://stackoverflow.com/a/24159933/1365699
+    //
+    // and a discussion of `&str` and byte slices:
+    // https://old.reddit.com/r/rust/comments/3btcgk/convert_a_str_back_to_a_u8_array/
     assert_eq!(result, b"lorem ipsum\n");
 }
 
