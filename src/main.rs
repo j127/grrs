@@ -39,7 +39,6 @@ struct Cli {
     // verbose: clap_verbosity_flag::Verbosity,
 }
 
-
 fn main() -> Result<()> {
     env_logger::init();
     info!("booting application");
