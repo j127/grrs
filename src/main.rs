@@ -68,7 +68,6 @@ fn main() -> Result<()> {
 
     grrs::find_matches(&content, &args.pattern, &mut std::io::stdout());
 
-    // grrs::channels::ctrl_channel();
     let ctrl_c_events = grrs::ctrl_channel()?;
     let ticks = tick(Duration::from_secs(1));
 
