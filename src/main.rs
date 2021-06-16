@@ -1,3 +1,6 @@
+use std::time::Duration;
+use crossbeam_channel::{bounded, tick, Receiver, select};
+
 // env_logger is the logging adapter in this project, but there are more
 // listed here:
 // https://docs.rs/log/0.4.14/log/
@@ -64,6 +67,23 @@ fn main() -> Result<()> {
     bar.finish();
 
     grrs::find_matches(&content, &args.pattern, &mut std::io::stdout());
+
+    // grrs::channels::ctrl_channel();
+    let ctrl_c_events = grrs::ctrl_channel()?;
+    let ticks = tick(Duration::from_secs(1));
+
+    loop {
+        select! {
+            recv(ticks) -> _ => {
+                println!("working (ctrl-c to exit)");
+            }
+            recv(ctrl_c_events) -> _ => {
+                println!();
+                println!("bye");
+                break;
+            }
+        }
+    }
 
     Ok(())
 }

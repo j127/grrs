@@ -1,3 +1,6 @@
+use crossbeam_channel::{bounded, Receiver};
+use anyhow::Result;
+
 // This function accepts any "writer" that implements `std::io::Write`. See the
 // implementors in the docs (Stdout, Stderr, LineWriter, BufWriter, etc.). In
 // the test it writes to a `Vec<u8>`.
@@ -14,6 +17,18 @@ pub fn find_matches(content: &str, pattern: &str, mut writer: impl std::io::Writ
             writeln!(writer, "{}", line).expect("error writing output");
         }
     }
+}
+
+// A crossbeam-channel example.
+// https://rust-cli.github.io/book/in-depth/signals.html
+pub fn ctrl_channel() -> Result<Receiver<()>, ctrlc::Error> {
+    let (sender, receiver) = bounded(100);
+
+    ctrlc::set_handler(move || {
+        let _ = sender.send(());
+    })?;
+
+    Ok(receiver)
 }
 
 #[test]
