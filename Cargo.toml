@@ -17,6 +17,7 @@ crossbeam-channel = "0.5"
 ctrlc = "3.1.9"
 confy = "0.4.0"
 serde = "1.0.126"
+exitcode = "1.1.2"
 
 [dev-dependencies]
 assert_cmd = "0.10"
