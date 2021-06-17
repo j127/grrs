@@ -1,0 +1,4 @@
+# This is an example of using confy
+# This file should go in ~/.config/grrs/grrs.toml
+message = "hello world"
+num = 127

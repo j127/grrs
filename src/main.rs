@@ -1,6 +1,8 @@
 use std::time::Duration;
 use crossbeam_channel::{bounded, tick, Receiver, select};
 
+use serde::{Serialize, Deserialize};
+
 // env_logger is the logging adapter in this project, but there are more
 // listed here:
 // https://docs.rs/log/0.4.14/log/
@@ -33,6 +35,13 @@ use structopt::StructOpt;
 // https://rust-cli.github.io/book/tutorial/output.html
 use std::io::{self, Write};
 
+// confy reading from the config.toml file
+#[derive(Debug, Default, Serialize, Deserialize)]
+struct MyConfig {
+    message: String,
+    num: i32,
+}
+
 #[derive(Debug, StructOpt)]
 struct Cli {
     pattern: String,
@@ -46,6 +55,10 @@ fn main() -> Result<()> {
     env_logger::init();
     info!("booting application");
     warn!("testing a warn message");
+
+    let cfg: MyConfig = confy::load("grrs")?;
+    info!("read config from toml file: {:?}, {:?}", cfg.message, cfg.num);
+
     let stdout = io::stdout();
     // let mut handle = io::BufWriter::new(stdout);
     // locking here prevents the system from locking and unlocking over and over
